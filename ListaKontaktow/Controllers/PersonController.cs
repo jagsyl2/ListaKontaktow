@@ -10,6 +10,11 @@ namespace ListaKontaktow.Controllers
     {
         private readonly IPersonService _personService;
 
+        public PersonController (IPersonService personService)
+        {
+            _personService = personService;
+        }
+
         [HttpPost]
         public void PostPerson([FromBody] Person person)
         {
