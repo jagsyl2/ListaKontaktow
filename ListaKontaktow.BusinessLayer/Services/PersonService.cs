@@ -1,5 +1,6 @@
 ﻿using ListaKontaktow.DataLayer;
 using ListaKontaktow.DataLayer.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,9 @@ namespace ListaKontaktow.BusinessLayer.Services
         {
             using (var context = _contactListDbContextFactoryMethod())
             {
-                return context.Persons.ToList();
+                return context.Persons
+                    .Include(p => p.Category)
+                    .ToList();
             }
         }
 

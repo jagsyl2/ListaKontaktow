@@ -11,7 +11,7 @@ namespace ListaKontaktow.BusinessLayer.Services
         bool IsValidEmail(string email);
         bool IsDuplicateEmail(string email);
         void AddUser(User user);
-        Person GetLoginAccess(string email, string password);
+        bool GetLoginAccess(string email, string password);
     }
 
     public class LoginService : ILoginService
@@ -45,14 +45,12 @@ namespace ListaKontaktow.BusinessLayer.Services
             }
         }
 
-        public Person GetLoginAccess(string email, string password)
+        public bool GetLoginAccess(string email, string password)
         {
             using (var context = _contactListDbContextFactoryMethod())
             {
-                return context.Persons
-                    .AsQueryable()
-                    .Where(p => p.Email == email && p.Password == password)
-                    .FirstOrDefault();
+                return context.Users
+                    .Any(p => p.Email == email && p.Password == password);
             }
         }
     }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Unity;
+using Unity.Microsoft.DependencyInjection;
 
 namespace ListaKontaktow
 {
@@ -19,11 +20,29 @@ namespace ListaKontaktow
             container.Resolve<Program>().Run();
 
             WebHost.CreateDefaultBuilder()
-                .ConfigureServices(services => services.AddMvc())
+                .UseUnityServiceProvider(container)
+                .ConfigureServices(services =>
+                {
+                    services.AddMvc();
+                    services.AddCors(options =>
+                    {
+                        options.AddPolicy("AllowOrigin",
+                            builder =>
+                            {
+                                builder.WithOrigins(
+                                    "http://localhost:4200"
+                                    )
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowCredentials();
+                            });
+                    });
+                })
                 .Configure(app =>
                 {
+                    app.UseCors("AllowOrigin");
                     app.UseMvc();
-                    app.UseCors();
+
                 })
                 .UseUrls("http://*:10500")
                 .Build()

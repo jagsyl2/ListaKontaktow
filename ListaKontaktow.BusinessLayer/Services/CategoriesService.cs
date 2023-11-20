@@ -10,6 +10,8 @@ namespace ListaKontaktow.BusinessLayer.Services
     {
         void CreateCategories();
         void CreateSubcategories();
+        List<Category> GetAll();
+        List<Subcategory> GetAllSubcategoryByCategoryId(int id);
     }
 
     public class CategoriesService : ICategoriesService
@@ -19,6 +21,24 @@ namespace ListaKontaktow.BusinessLayer.Services
         public CategoriesService(Func<IContactListDbContext> contactListDbContextFactoryMethod)
         {
             _contactListDbContextFactoryMethod = contactListDbContextFactoryMethod;
+        }
+
+        public List<Category> GetAll()
+        {
+            using (var context = _contactListDbContextFactoryMethod())
+            {
+                return context.Categories.ToList();
+            }
+        }
+
+        public List<Subcategory> GetAllSubcategoryByCategoryId(int id)
+        {
+            using (var context = _contactListDbContextFactoryMethod())
+            {
+                return context.Subcategories
+                    .Where(sub => sub.CategoryId == id)
+                    .ToList();
+            }
         }
 
         public void CreateCategories()
